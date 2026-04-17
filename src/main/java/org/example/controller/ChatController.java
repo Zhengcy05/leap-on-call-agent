@@ -156,6 +156,7 @@ public class ChatController {
             return emitter;
         }
 
+        // 异步执行
         executor.execute(() -> {
             try {
                 logger.info("收到 ReactAgent 对话请求 - SessionId: {}, Question: {}", request.getId(), request.getQuestion());
@@ -187,7 +188,8 @@ public class ChatController {
                 
                 // 使用 agent.stream() 进行流式对话
                 Flux<NodeOutput> stream = agent.stream(request.getQuestion());
-                
+
+                // 订阅并监听数据流
                 stream.subscribe(
                     output -> {
                         try {

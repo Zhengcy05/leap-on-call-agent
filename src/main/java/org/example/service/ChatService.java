@@ -60,7 +60,7 @@ public class ChatService {
      * 创建 ChatModel
      * @param temperature 控制随机性 (0.0-1.0)
      * @param maxToken 最大输出长度
-     * @param topP 核采样参数
+     * @param topP 核采样参数-把低概率的词语直接扔进垃圾桶
      */
     public DashScopeChatModel createChatModel(DashScopeApi dashScopeApi, double temperature, int maxToken, double topP) {
         return DashScopeChatModel.builder()
@@ -160,7 +160,9 @@ public class ChatService {
                 .model(chatModel)
                 .systemPrompt(systemPrompt)
                 .methodTools(buildMethodToolsArray())
+                // 基于反射注入
                 .tools(getToolCallbacks())
+                // 通过网络动态拉取过来的MCP外部扩展能力
                 .build();
     }
 
