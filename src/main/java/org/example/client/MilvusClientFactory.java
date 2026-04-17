@@ -32,7 +32,6 @@ public class MilvusClientFactory {
 
     /**
      * 创建并初始化 Milvus 客户端
-     * 
      * 简化版本：直接连接并创建 collection
      * 
      * @return MilvusServiceClient 实例
@@ -164,8 +163,24 @@ public class MilvusClientFactory {
                 .withCollectionName(MilvusConstants.MILVUS_COLLECTION_NAME)
                 .withFieldName("vector")
                 .withIndexType(IndexType.IVF_FLAT)
-                .withMetricType(MetricType.L2)  // L2 距离（欧氏距离）
+                // Inverted File Flat 这是一种基于量化的索引。它会将整个高维向量空间划分为多个聚类（簇）。
+                // 查询时，系统会先找到与目标向量最近的几个聚类中心，然后再在这些聚类内部进行精确计算
+                .withMetricType(MetricType.L2)
+                /*
+                    连续型向量度量-最常用，适用于浮点数数组
+                    1. L2 距离（欧氏距离）-> 计算机视觉（CV）领域最常用
+                    2. IP Inner Product 内积/点积 -> 推荐系统（如计算用户向量和物品向量的匹配度）
+                    3. COSINE 余弦相似度 -> 自然语言处理（NLP）领域绝对的主力。比如文本检索、语义相似度比对。
+                 */
+                /*
+                    二值型向量度量-有时为了节省内存或进行特定类型的检索
+                    1. HAMMING -> 比较两个二值向量，计算它们在相同位置上不一样的位数
+                        基于哈希算法的图像检索，快速判断两张图片是否为同一张图的缩略图或略微修改版
+                    2. JACCARD -> 杰卡德距离,衡量两个集合的差异度。计算公式为 1 - (交集数量 / 并集数量)
+                        化学分子结构检索、电商用户的商品偏好集合对比
+                 */
                 .withExtraParam("{\"nlist\":128}")
+                // nlist 的含义： 代表要将整个向量空间划分为多少个聚类（簇 / Buckets）
                 .withSyncMode(Boolean.FALSE)
                 .build();
 

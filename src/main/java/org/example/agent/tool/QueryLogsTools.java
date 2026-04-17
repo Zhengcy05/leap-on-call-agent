@@ -51,9 +51,9 @@ public class QueryLogsTools {
      * 获取可用的日志主题列表
      * 用于查询前先了解有哪些日志主题可供查询
      */
-    @Tool(description = "Get all available log topics and their descriptions. " +
-            "Call this tool first before querying logs to understand what log topics are available. " +
-            "Returns a list of log topics with their names, descriptions, and example queries.")
+    @Tool(description = "Get all available log topics and their descriptions. "
+            + "Call this tool first before querying logs to understand what log topics are available. "
+            + "Returns a list of log topics with their names, descriptions, and example queries.")
     public String getAvailableLogTopics() {
         logger.info("获取可用的日志主题列表");
         

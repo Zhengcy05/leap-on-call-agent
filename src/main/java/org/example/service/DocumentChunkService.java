@@ -68,16 +68,18 @@ public class DocumentChunkService {
         int lastEnd = 0;
         String currentTitle = null;
 
+        // 这种方式会保存全局的一个引言
         while (matcher.find()) {
             // 保存上一个章节
             if (lastEnd < matcher.start()) {
+                // 截取章节文本
                 String sectionContent = content.substring(lastEnd, matcher.start()).trim();
                 if (!sectionContent.isEmpty()) {
                     sections.add(new Section(currentTitle, sectionContent, lastEnd));
                 }
             }
-
             // 更新当前标题
+            // 正则中的捕获组，即(.+)部分
             currentTitle = matcher.group(2).trim();
             lastEnd = matcher.start();
         }
@@ -106,7 +108,7 @@ public class DocumentChunkService {
         String content = section.content;
         String title = section.title;
 
-        // 如果章节内容小于最大尺寸，直接作为一个分片
+        // 1. 如果章节内容小于最大尺寸，直接作为一个分片
         if (content.length() <= chunkConfig.getMaxSize()) {
             DocumentChunk chunk = new DocumentChunk(
                 content, 
@@ -119,16 +121,17 @@ public class DocumentChunkService {
             return chunks;
         }
 
-        // 章节内容较长，需要进一步分片
+        // 2. 章节内容较长，需要进一步分片
         // 优先在段落边界分割
         List<String> paragraphs = splitByParagraphs(content);
-        
+
+        // 当前正在拼接的缓存
         StringBuilder currentChunk = new StringBuilder();
         int currentStartIndex = section.startIndex;
         int chunkIndex = startChunkIndex;
 
         for (String paragraph : paragraphs) {
-            // 如果当前分片加上新段落超过最大尺寸
+            // 如果当前分片加上*新段落*超过最大尺寸
             if (currentChunk.length() > 0 && 
                 currentChunk.length() + paragraph.length() > chunkConfig.getMaxSize()) {
                 
@@ -209,6 +212,7 @@ public class DocumentChunkService {
             return overlap.substring(lastSentenceEnd + 1).trim();
         }
 
+        // 兜底逻辑：如果没有找到标点，或者标点太靠前了，退化为原始的暴力截取
         return overlap.trim();
     }
 
