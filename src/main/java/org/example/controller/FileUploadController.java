@@ -48,6 +48,7 @@ public class FileUploadController {
                     .body("不支持的文件格式，仅支持: " + fileUploadConfig.getAllowedExtensions());
         }
 
+        // 文件落盘与覆盖机制
         try {
             String uploadPath = fileUploadConfig.getPath();
             Path uploadDir = Paths.get(uploadPath).normalize();
@@ -55,7 +56,7 @@ public class FileUploadController {
                 Files.createDirectories(uploadDir);
             }
 
-            // 使用原始文件名，而不是UUID，以便实现基于文件名的去重
+            // 使用原始文件名，而不是UUID，以便实现基于文件名的同名覆盖更新
             Path filePath = uploadDir.resolve(originalFilename).normalize();
             
             // 如果文件已存在，先删除旧文件（实现覆盖更新）
@@ -135,6 +136,7 @@ public class FileUploadController {
         }
     }
 
+    // 获得该文件的拓展名
     private String getFileExtension(String filename) {
         int lastIndexOf = filename.lastIndexOf(".");
         if (lastIndexOf == -1) {
@@ -143,6 +145,7 @@ public class FileUploadController {
         return filename.substring(lastIndexOf + 1).toLowerCase();
     }
 
+    // 是否是合法拓展格式
     private boolean isAllowedExtension(String extension) {
         String allowedExtensions = fileUploadConfig.getAllowedExtensions();
         if (allowedExtensions == null || allowedExtensions.isEmpty()) {

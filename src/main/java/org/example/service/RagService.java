@@ -175,7 +175,7 @@ public class RagService {
         GenerationParam param = GenerationParam.builder()
                 .apiKey(apiKey)
                 .model(model)
-                .incrementalOutput(true)
+                .incrementalOutput(true) // 开启增量输出 实现流式输出的关键
                 .resultFormat("message")
                 .messages(messages)
                 .build();
