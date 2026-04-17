@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 向量搜索服务
+ * 向量召回服务
  * 负责从 Milvus 中搜索相似向量
  */
 @Service
@@ -56,6 +56,7 @@ public class VectorSearchService {
                     .withMetricType(io.milvus.param.MetricType.L2)
                     .withOutFields(List.of("id", "content", "metadata"))
                     .withParams("{\"nprobe\":10}")
+                    // 算法参数："nprobe":10 代表在底层的 IVF 聚类中，只扫描距离最近的 10 个簇
                     .build();
 
             // 3. 执行搜索
@@ -73,7 +74,7 @@ public class VectorSearchService {
                 SearchResult result = new SearchResult();
                 result.setId((String) wrapper.getIDScore(0).get(i).get("id"));
                 result.setContent((String) wrapper.getFieldData("content", 0).get(i));
-                result.setScore(wrapper.getIDScore(0).get(i).getScore());
+                result.setScore(wrapper.getIDScore(0).get(i).getScore()); // 分数越小越相似
                 
                 // 解析 metadata
                 Object metadataObj = wrapper.getFieldData("metadata", 0).get(i);

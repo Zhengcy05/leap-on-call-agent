@@ -30,7 +30,7 @@ import java.util.*;
  */
 @Service
 public class VectorIndexService {
-
+    // 保证打印的log信息带有类信息
     private static final Logger logger = LoggerFactory.getLogger(VectorIndexService.class);
 
     @Autowired
@@ -117,7 +117,7 @@ public class VectorIndexService {
 
     /**
      * 索引单个文件
-     * 
+     * 索引->向量化和存储到数据库
      * @param filePath 文件路径
      * @throws Exception 索引失败时抛出异常
      */
