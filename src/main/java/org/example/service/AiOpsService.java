@@ -260,6 +260,7 @@ public class AiOpsService {
 
     /**
      * 构建 Supervisor Agent 系统提示词
+     * 这里的prompt一定程度上去定义了Agent调度的一个规则
      */
     private String buildSupervisorSystemPrompt() {
         return """
