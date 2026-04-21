@@ -106,6 +106,7 @@ public class AiOpsService {
                 .methodTools(buildMethodToolsArray())
                 .tools(toolCallbacks)
                 .outputKey("planner_plan")
+                // 输出键 将其输出的结果存到到全局共享内存
                 .build();
     }
 
